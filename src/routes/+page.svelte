@@ -26,12 +26,21 @@
 	{:catch error}
 		<div class="max-w-screen-sm w-screen p-4">
 			<p class="text-xl text-center m-6">Whoops! Something went wrong...</p>
-			<details>
+			<details class="flex flex-col gap-1">
 				<summary class="list-none text-center align-middle">
 					Failed to load feedback
 					<span class="text-slate-400 text-sm align-middle cursor-pointer">(detail)</span>
 				</summary>
-				<p class="rounded mt-2 p-4 bg-slate-800 bg-opacity-80">{error.message}</p>
+				<div class="rounded mt-2 p-1 bg-slate-800 bg-opacity-80">
+					{#each error as err}
+						<details class="rounded m-2 p-2 bg-slate-700 bg-opacity-20">
+							<summary class="mb-1 font-semibold">
+								{err.summary}
+							</summary>
+							<p>{err.detail}</p>
+						</details>
+					{/each}
+				</div>
 			</details>
 		</div>
 	{/await}
