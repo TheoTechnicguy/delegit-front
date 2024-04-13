@@ -5,23 +5,19 @@
  * @abstract API functions for feedback
  */
 
+import client from "./client.js";
 import Feedback from "../objects/feedback.js";
 
 /**
- * The API URL
- * @type {string}
- */
-const API_URL = "http://localhost:41990/api";
-
-/**
  * Fetch all feedback from API
- * @returns {Promise<Array<Feedback>>}
+ * @returns {Promise<Feedback[]>}
  */
 async function getAllFeedback() {
 	return new Promise((resolve, reject) => {
-		fetch(`${API_URL}/feedback`)
-			.then(response => response.json())
-			.then(data => {
+		client
+			.get(client.getURLFor("/feedback"))
+			.then((response) => response.json())
+			.then((data) => {
 				let feedbackArray = [];
 				for (const feedbackData of data) {
 					let feedback = new Feedback(
@@ -35,115 +31,128 @@ async function getAllFeedback() {
 				}
 				resolve(feedbackArray);
 			})
-			.catch(error => reject(error));
-	})
+			.catch((error) => reject(error));
+	});
 }
 
 /**
  * Fetch feedback matching ID from API
  * @param {number} id
- * @returns {Promise<{
- * 	 ID: number,
- * 	 Course: string
- *   Feedback: string,
- *   Upvotes: number,
- *   Downvotes: number
- * }>}
+ * @returns {Promise<Feedback>}
  */
 async function getFeedbackById(id) {
-	const response = await fetch(`${API_URL}/feedback/${id}`);
-	return response.json();
+	return new Promise((resolve, reject) => {
+		client
+			.get(client.getURLFor(`/feedback/${id}`))
+			.then((response) => response.json())
+			.then((data) => {
+				let feedback = new Feedback(
+					data.ID,
+					data.Course,
+					data.Feedback,
+					data.Upvotes,
+					data.Downvotes
+				);
+				resolve(feedback);
+			})
+			.catch((error) => reject(error));
+	});
 }
 
 /**
  * Add feedback to API
- * @param {{
- * 	 ID: number,
- * 	 Course: string
- *   Feedback: string,
- *   Upvotes: number,
- *   Downvotes: number
- * }} feedback
- * @returns {Promise<{
- * 	 ID: number,
- * 	 Course: string
- *   Feedback: string,
- *   Upvotes: number,
- *   Downvotes: number
- * }>}
+ * @param {Feedback} feedback
+ * @returns {Promise<Feedback>}
  */
 async function addFeedback(feedback) {
-	const response = await fetch(`${API_URL}/feedback`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify(feedback)
+	return new Promise((resolve, reject) => {
+		client
+			.post(client.getURLFor("/feedback"), feedback)
+			.then((response) => response.json())
+			.then((data) => {
+				let feedback = new Feedback(
+					data.ID,
+					data.Course,
+					data.Feedback,
+					data.Upvotes,
+					data.Downvotes
+				);
+				resolve(feedback);
+			})
+			.catch((error) => reject(error));
 	});
-	return response.json();
 }
 
 /**
  * Upvote feedback matching ID from API
  * @param {number} id
- * @returns {Promise<{
- * 	 ID: number,
- * 	 Course: string
- *   Feedback: string,
- *   Upvotes: number,
- *   Downvotes: number
- * }>}
+ * @returns {Promise<Feedback>}
  */
 async function upvoteFeedback(id) {
-	console.log("upvoteFeedback" + " " + id);
-	const response = await fetch(`${API_URL}/feedback/${id}/upvote`, {
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: "1"
+	return new Promise((resolve, reject) => {
+		client
+			.patch(client.getURLFor(`/feedback/${id}/upvote`), "1")
+			.then((response) => response.json())
+			.then((data) => {
+				let feedback = new Feedback(
+					data.ID,
+					data.Course,
+					data.Feedback,
+					data.Upvotes,
+					data.Downvotes
+				);
+				resolve(feedback);
+			})
+			.catch((error) => reject(error));
 	});
-	return response.json();
 }
 
 /**
  * Downvote feedback matching ID from API
  * @param {number} id
- * @returns {Promise<{
- * 	 ID: number,
- * 	 Course: string
- *   Feedback: string,
- *   Upvotes: number,
- *   Downvotes: number
- * }>}
+ * @returns {Promise<Feedback>}
  */
 async function downvoteFeedback(id) {
-	const response = await fetch(`${API_URL}/feedback/${id}/downvote`, {
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: "1"
+	return new Promise((resolve, reject) => {
+		client
+			.patch(client.getURLFor(`/feedback/${id}/downvote`), "1")
+			.then((response) => response.json())
+			.then((data) => {
+				let feedback = new Feedback(
+					data.ID,
+					data.Course,
+					data.Feedback,
+					data.Upvotes,
+					data.Downvotes
+				);
+				resolve(feedback);
+			})
+			.catch((error) => reject(error));
 	});
-	return response.json();
 }
 
 /**
  * Delete feedback matching ID from API
  * @param {number} id
- * @returns {Promise<{
- * 	 ID: number,
- * 	 Course: string
- *   Feedback: string,
- *   Upvotes: number,
- *   Downvotes: number
- * }>}
+ * @returns {Promise<Feedback>}
  */
 async function deleteFeedback(id) {
-	const response = await fetch(`${API_URL}/feedback/${id}`, {
-		method: "DELETE"
+	return new Promise((resolve, reject) => {
+		client
+			.delete(client.getURLFor(`/feedback/${id}`))
+			.then((response) => response.json())
+			.then((data) => {
+				let feedback = new Feedback(
+					data.ID,
+					data.Course,
+					data.Feedback,
+					data.Upvotes,
+					data.Downvotes
+				);
+				resolve(feedback);
+			})
+			.catch((error) => reject(error));
 	});
-	return response.json();
 }
 
 export default {
