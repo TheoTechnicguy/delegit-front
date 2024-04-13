@@ -1,0 +1,33 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	background-color: theme(colors.slate.700);
+	color: theme(colors.slate.100);
+}
+
+h1 {
+	@apply text-4xl font-bold text-center p-4 m-2;
+}
+
+main {
+	@apply container w-screen max-w-screen-md flex flex-col justify-center items-center;
+}
+
+.test-blue {
+	@apply border-2 border-blue-500;
+}
+
+.test-red {
+	@apply border-2 border-red-500;
+}
+
+.test-green {
+	@apply border-2 border-green-500;
+}
+
+.test-yellow {
+	@apply border-2 border-yellow-500;
+}
