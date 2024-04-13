@@ -67,7 +67,7 @@ async function getFeedbackById(id) {
 async function addFeedback(feedback) {
 	return new Promise((resolve, reject) => {
 		client
-			.post(client.getURLFor("/feedback"), feedback)
+			.post(client.getURLFor("/feedback"), JSON.stringify(feedback.toJSON()))
 			.then((response) => response.json())
 			.then((data) => {
 				let feedback = new Feedback(
