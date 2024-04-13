@@ -1,21 +1,51 @@
 <script>
 	import api from "$lib/api/feedback.js";
+	import Error from "$lib/api/error.js";
+	import Feedback from "$lib/objects/feedback.js";
 	import Navbar from "../../../interfaces/navbar/navbar.svelte";
+
+	/**
+	 * @type {Error[]}
+	 */
+	let errors = [];
 </script>
 
 <Navbar page="new" />
 <main>
 	<h1>New Feedback</h1>
 
+	{#each errors as err}
+		<div class="rounded border-2 border-purple-600 m-2 p-2 w-full bg-purple-600 bg-opacity-20">
+			<p class="font-semibold">{err.summary}</p>
+			<p>{err.detail}</p>
+		</div>
+	{/each}
+
 	<form
 		class="rounded border border-slate-500 p-4 m-4 w-screen max-w-screen-md"
-		on:submit|preventDefault={async function() {
+		on:submit|preventDefault={async function () {
 			const form = document.querySelector("form");
+			if (form === null) {
+				errors.push(new Error("No form found", ""));
+				return;
+			}
+
 			const formData = new FormData(form);
-			const data = Object.fromEntries(formData.entries());
-			console.log(data);
-			let resp = await api.addFeedback(data);
-			console.log(resp);
+
+			Feedback.fromForm(formData)
+				.then((feedback) => {
+					api
+						.addFeedback(feedback)
+						.then(() => {
+							window.location.assign("/");
+						})
+						.catch((error) => {
+							errors = error;
+						});
+				})
+				.catch((error) => {
+					errors.push(error);
+				});
 		}}
 	>
 		<div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
