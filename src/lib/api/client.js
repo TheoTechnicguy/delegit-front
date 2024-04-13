@@ -5,19 +5,9 @@
  * @abstract An overlay to the fetch API, customised for the application
  */
 
-const PUBLIC_API_BASE = "http://localhost:41990/api";
+import Error from "./error.js";
 
-class Error {
-	/**
-	 * A UX-friendly error
-	 * @param {string} summary The error's summary
-	 * @param {string} detail The error's detail
-	 */
-	constructor(summary, detail) {
-		this.summary = summary;
-		this.detail = detail;
-	}
-}
+const PUBLIC_API_BASE = "http://localhost:41990/api";
 
 class Client {
 	/**
@@ -83,10 +73,13 @@ class Client {
 			fetch(this.fillRequest(request))
 				.then(async function (response) {
 					if (!response.ok) {
+						/**
+						 * @type {Error[]}
+						 */
 						let errors = [];
 						let responseErrors = await response.json();
 
-						for (const err of responseErrors) {
+						for (const err of responseErrors.Errors) {
 							errors.push(new Error(err.Summary, err.Detail));
 						}
 						reject(errors);
@@ -94,7 +87,7 @@ class Client {
 					resolve(response);
 				})
 				.catch((error) => {
-					reject(new Error("Failed to fetch", error.message));
+					reject([new Error("Failed to fetch", error.message)]);
 				});
 		});
 	}
